@@ -13,21 +13,24 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 class Linkedin:
-    def __init__(self,login_cookies,no_of_jobs_to_apply):
+    def __init__(self,no_of_jobs_to_apply):
         chrome_driver_path = './chromedriver-win64/chromedriver.exe'
         chrome_options = Options()
         WINDOW_SIZE = "1920,1080"
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--window-size=%s" % WINDOW_SIZE)
+        chrome_options.add_argument("--log-level=1")
+        
         # chrome_options.binary_location = CHROME_PATH
 
         service = Service(executable_path=chrome_driver_path)
         # self.driver = webdriver.Chrome(service=service, options=chrome_options)
         self.logged=False
         self.driver = webdriver.Chrome(options=chrome_options)
+
         self.no_of_jobs_to_apply=no_of_jobs_to_apply
-        self.login_with_cookies(login_cookies)
+        # self.login_with_cookies(login_cookies)
 
     #login
     def login_with_cookies(self, cookies):
@@ -44,11 +47,13 @@ class Linkedin:
             if "feed" in self.driver.current_url:
                 app.utils.prGreen("Successfully logged in with cookies!")
                 self.logged=True
+                return True
             else:
                 app.utils.prRed("Failed to log in with cookies.")
-                return {'error':'Login failed'}
+                return False
         except Exception as e:
             app.utils.prRed(f"An error occurred during login: {str(e)}")
+            return False
 
     def generateUrls(self):
         if not os.path.exists('data'):
