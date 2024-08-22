@@ -13,7 +13,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 class Linkedin:
-    def __init__(self,email,password,no_of_jobs_to_apply):
+    def __init__(self,login_cookies,no_of_jobs_to_apply):
         chrome_driver_path = './chromedriver-win64/chromedriver.exe'
         chrome_options = Options()
         WINDOW_SIZE = "1920,1080"
@@ -24,21 +24,31 @@ class Linkedin:
 
         service = Service(executable_path=chrome_driver_path)
         # self.driver = webdriver.Chrome(service=service, options=chrome_options)
-        self.driver = webdriver.Chrome(service=service, options=chrome_options)
+        self.logged=False
+        self.driver = webdriver.Chrome(options=chrome_options)
         self.no_of_jobs_to_apply=no_of_jobs_to_apply
-        self.login(email,password)
+        self.login_with_cookies(login_cookies)
+
     #login
-    def login(self,email,password):
-        self.driver.get("https://www.linkedin.com/login?trk=guest_homepage-basic_nav-header-signin")
-        app.utils.prYellow("Trying to log in linkedin.")
-        try:    
-            self.driver.find_element("id","username").send_keys(email)
-            self.driver.find_element("id","password").send_keys(password)
-            time.sleep(4)
-            self.driver.find_element("xpath",'//*[@id="organic-div"]/form/div[3]/button').click()
-        except Exception as e: 
-            app.utils.prRed(e)
-    # login()
+    def login_with_cookies(self, cookies):
+        self.driver.get("https://www.linkedin.com/")
+        app.utils.prYellow("Logging in with cookies.")
+        try:
+            for cookie_name, cookie_value in cookies.items():
+                self.driver.add_cookie({'name': cookie_name, 'value': cookie_value})
+
+            self.driver.refresh()  # Refresh the page to log in using the cookies
+            time.sleep(3)  # Wait for the page to load
+
+            # Verify login
+            if "feed" in self.driver.current_url:
+                app.utils.prGreen("Successfully logged in with cookies!")
+                self.logged=True
+            else:
+                app.utils.prRed("Failed to log in with cookies.")
+                return {'error':'Login failed'}
+        except Exception as e:
+            app.utils.prRed(f"An error occurred during login: {str(e)}")
 
     def generateUrls(self):
         if not os.path.exists('data'):
@@ -58,7 +68,8 @@ class Linkedin:
         countJobs = 0
         countCannotApply=0
         appliedData={}
-
+        if not self.logged:
+            return appliedData
         urlData = app.utils.getUrlDataFile()
 
         for url in urlData:
