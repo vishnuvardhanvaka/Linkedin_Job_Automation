@@ -7,7 +7,7 @@ headless=True
 # continent locations:["Europe", "Asia", "Australia", "NorthAmerica", "SouthAmerica", "Africa", "Australia"]
 location = ["India"]
 # keywords related with your job search
-keywords = ["machine learning"]
+keywords = ["Data science","Software Developer"]
 # keywords = ["programming"]
 #job experience Level - ex:  ["Internship", "Entry level" , "Associate" , "Mid-Senior level" , "Director" , "Executive"]
 experienceLevels = ["Entry level"]
