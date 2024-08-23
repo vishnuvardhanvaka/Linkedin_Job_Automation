@@ -57,14 +57,14 @@ async def job_automate(data:JobAutomate,background_tasks: BackgroundTasks):
             background_tasks.add_task(Linkedin_driver.linkJobApply)
             return {'status': True, 'msg': 'Jobs applying has started in background!'}
         else:
-            Linkedin().driver.quit()
+            Linkedin_driver.driver.quit()
             return {'status': False, 'msg': 'Invalid cookie. Login Failed!'}
     except Exception as e:
         utils.prRed("Error in main: " +str(e))
         # close firefox driver
         end = time.time()
         utils.prYellow("---Took: " + str(round((time.time() - start)/60)) + " minute(s).")
-        Linkedin().driver.quit()
+        # Linkedin().driver.quit()
         return {'status': False, 'msg': str(e)}
 
 
