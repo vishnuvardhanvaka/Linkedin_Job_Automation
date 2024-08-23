@@ -27,7 +27,7 @@ class Linkedin:
         service = Service(executable_path=chrome_driver_path)
         # self.driver = webdriver.Chrome(service=service, options=chrome_options)
         self.logged=False
-        self.driver = webdriver.Chrome(options=chrome_options)
+        self.driver = webdriver.Chrome(service=service, options=chrome_options)
 
         self.no_of_jobs_to_apply=no_of_jobs_to_apply
         # self.login_with_cookies(login_cookies)
